@@ -1,0 +1,61 @@
+
+<!--<div id="received-message"></div>-->
+
+<!--<form id="the-form" action="/">-->
+    <!--<label id="label"/>-->
+    <!--<input type="text" id="my-message"/>-->
+    <!--<input type="submit" value="send" id="submitBtn" disabled="true">-->
+<!--</form>-->
+<script>
+    window.onload = function () {
+        var id = frameElement.id;
+        document.getElementById("label").innerHTML = id;
+        var  form = document.getElementById("the-form");
+        var   myMessage = document.getElementById("my-message");
+        var submitBtn = document.getElementById("submitBtn");
+        window.parent.postMessage({message: id, frame:"system"},"*");
+
+        form.onsubmit = function () {
+            window.parent.postMessage({message :myMessage.value, frame: id}, "*");
+            return false;
+        };
+
+        function displayMessage (evt) {
+            var div1 = document.createElement("p");
+            div1.innerHTML = evt.data;
+            document.getElementById('received-message').appendChild(div1);
+        }
+
+        function disableButton(){
+            if(myMessage.value){
+                document.getElementById('submitBtn').removeAttribute("disabled");
+            }
+            else
+            {
+                document.getElementById('submitBtn').setAttribute('disabled','disabled');
+            }
+        }
+
+        if (window.addEventListener) {
+            // For standards-compliant web browsers
+            window.addEventListener("message", displayMessage, false);
+            myMessage.addEventListener("change", disableButton, false);
+        }
+        else {
+            window.attachEvent("onmessage", displayMessage);
+            myMessage.attachEvent("onchange", disableButton);
+        }
+    };
+
+</script>
+<div id="received-message"></div>
+<fieldset>
+    <form id="the-form" action="/">
+        <label id="label"></label>
+        <input type="text" id="my-message">
+
+        <input type="submit" value="send" id="submitBtn" disabled="true">
+    </form>
+</fieldset>
+
+
